@@ -1,0 +1,149 @@
+import personas.*
+import actividades.*
+describe "definiendo_Elementos" {
+		
+		const brazil=new Playa(largoDeLaPlaya=1500)//3 dias
+		const brozil=new Playa(largoDeLaPlaya=800)//1 dia
+		const nuevaYork=new  ExcursionACiudad(atraccionesPorVisitar=4)//2 dias
+		const viejaYork=new  ExcursionACiudad(atraccionesPorVisitar=8)//4 dias
+		const jamaika=new ExcursionACiudadTropical(atraccionesPorVisitar=4)//3 dias
+		const jaimiko=new ExcursionACiudadTropical(atraccionesPorVisitar=8)// 5 dias
+		const otraTropical=new ExcursionACiudadTropical(atraccionesPorVisitar=10)//6 dias   
+		const china=new SalidaDeTrekking(kmDeSenderos=100,diasSoleados=130)//2 dias
+		const chona=new SalidaDeTrekking(kmDeSenderos=50,diasSoleados=240)//1 dias
+		const chehenia=new SalidaDeTrekking(kmDeSenderos=250,diasSoleados=130)//5 dias
+		const maniana=new Gimnasia()//1 dia
+		const tarde=new Gimnasia()//1 dia
+		
+		const roque=new Relajado(maxActividades=2,edad=19)
+		const ana=new Tranquilo(maxActividades=3,edad=20)
+		const pepe=new Coherente(maxActividades=4,edad=21)
+		
+	test "comprobar resultados" {
+	
+		assert.that(brazil.esfuerzo())
+		assert.notThat(brozil.esfuerzo())
+		assert.notThat(nuevaYork.esfuerzo())
+		assert.notThat(jamaika.esfuerzo())
+		assert.that(viejaYork.esfuerzo())
+		assert.that(jaimiko.esfuerzo())
+		assert.notThat(otraTropical.esfuerzo())
+		assert.equals("español",maniana.idiomas())
+		assert.equals(1,maniana.dias())
+		assert.that(tarde.esfuerzo())
+		assert.notThat(tarde.bronzeado())
+		assert.equals(2,china.dias())
+		assert.that(china.esfuerzo())
+		assert.notThat(china.bronzeado())
+		
+		assert.equals(1,chona.dias())
+		assert.notThat(chona.esfuerzo())
+		assert.that(chona.bronzeado())
+		
+		assert.equals(5,chehenia.dias())
+		assert.that(chehenia.esfuerzo())
+		assert.that(chehenia.bronzeado())
+		
+		
+	}
+	
+	
+	test "interesante"{
+		
+		china.agregarIdioma("chino")
+		china.agregarIdioma("mongol")
+		
+		assert.notThat(china.interesante())
+		
+		chona.agregarIdioma("chino")
+		chona.agregarIdioma("mongol")
+		
+		assert.that(chona.interesante())
+	}
+	
+	
+	test "roque y ana"{
+		
+		//viajeaux es para comprobar el limite
+		const viaje2000=new Playa(largoDeLaPlaya=2000)
+		const viaje1000=new Playa(largoDeLaPlaya=1000) 
+		roque.registrarActividad(viaje2000)
+		roque.registrarActividad(viaje1000)
+		
+		//brozil es para comprobar el limite
+		assert.that(roque.esAdoradorDelSol())
+		assert.equals(#{viaje2000},roque.actividadesEsforzadas())
+		assert.equals(2,roque.cantidadActividadesRealizadas())
+		assert.throwsException({roque.registrarActividad(brozil)})
+		
+		ana.registrarActividad(viaje2000)
+		ana.registrarActividad(viaje1000)
+		ana.registrarActividad(tarde)
+		
+		assert.notThat(ana.esAdoradorDelSol())
+		assert.equals(#{viaje2000,tarde},ana.actividadesEsforzadas())
+		
+	}
+	
+	
+	
+	test "sol y esfuerzo"{
+		
+		ana.registrarActividad(brazil)
+		ana.registrarActividad(otraTropical)
+		assert.that(ana.esAdoradorDelSol())
+		ana.registrarActividad(maniana)
+		assert.notThat(ana.esAdoradorDelSol())
+		assert.equals(#{brazil,maniana},ana.actividadesEsforzadas())
+	}
+	
+	
+	
+	test "gustos"{
+		pepe.registrarActividad(brazil)
+		pepe.registrarActividad(brozil)
+		
+		assert.notThat(pepe.atrae(viejaYork))
+		assert.that(pepe.atrae(jamaika))
+		
+		pepe.registrarActividad(nuevaYork)
+		
+		assert.that(pepe.atrae(viejaYork))
+		assert.notThat(pepe.atrae(jamaika))
+		
+		assert.that(ana.atrae(otraTropical))
+		assert.notThat(ana.atrae(tarde))
+		
+		
+		chehenia.agregarIdioma("chechenes")
+		chehenia.agregarIdioma("chechenes2")
+		
+		assert.notThat(roque.atrae(chehenia))
+		roque.aprenderIdioma("chechenes")
+		assert.that(roque.atrae(chehenia))
+		
+	}
+
+	test "recomendaciones"{
+		pepe.registrarActividad(viejaYork)
+		pepe.registrarActividad(viejaYork)
+		
+		assert.notThat(viejaYork.recomendada(pepe))
+		assert.notThat(viejaYork.recomendada(ana))
+		
+		viejaYork.agregarIdioma("ingles")
+		viejaYork.agregarIdioma("otroIngles")
+		
+		assert.that(viejaYork.recomendada(ana))
+		assert.notThat(viejaYork.recomendada(pepe))
+		
+		assert.notThat(tarde.recomendada(roque))
+		assert.that(tarde.recomendada(ana))
+		assert.that(tarde.recomendada(pepe))
+		
+		
+	}
+
+
+	
+}
